@@ -8,7 +8,7 @@ interface Ixinv {
     function _setRewardPerBlock(uint newRewardPerBlock) external;
 }
 
-contract xinvManager {
+contract XinvManager {
     
     Ixinv public xinv;
     address public governance;
