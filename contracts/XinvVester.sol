@@ -111,8 +111,8 @@ contract XinvVester {
     }
 
     function cancel() public {
-        require(msg.sender == governance, "ONLY GOVERNANCE");
-        require(isCancellable, "NOT CANCELLABLE");
+        require(msg.sender == governance || msg.sender == recipient, "ONLY GOVERNANCE OR RECIPIENT");
+        require(isCancellable || msg.sender == recipient, "NOT CANCELLABLE");
         require(!isCancelled, "ALREADY CANCELLED");
         claim();
         require(xinv.redeem(xinv.balanceOf(address(this))) == 0, "REDEEM FAILED");
