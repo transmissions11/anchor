@@ -143,3 +143,8 @@ contract ComptrollerV5Storage is ComptrollerV4Storage {
     /// @notice Last block at which a contributor's COMP rewards have been allocated
     mapping(address => uint) public lastContributorBlock;
 }
+
+contract ComptrollerV7Storage is ComptrollerV5Storage {
+    /// @notice Whether the market is paused as collateral.
+    mapping(address => uint) public collateralGuardianPaused;
+}

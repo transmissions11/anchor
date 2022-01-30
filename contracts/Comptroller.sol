@@ -12,7 +12,7 @@ import "./Governance/IINV.sol";
  * @title Compound's Comptroller Contract
  * @author Compound
  */
-contract Comptroller is ComptrollerV5Storage, ComptrollerInterface, ComptrollerErrorReporter, ExponentialNoError {
+contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerErrorReporter, ExponentialNoError {
     /// @notice Emitted when an admin supports a market
     event MarketListed(CToken cToken);
 
@@ -100,7 +100,7 @@ contract Comptroller is ComptrollerV5Storage, ComptrollerInterface, ComptrollerE
      * @return True if the account is in the asset, otherwise false.
      */
     function checkMembership(address account, CToken cToken) external view returns (bool) {
-        return markets[address(cToken)].accountMembership[account];
+        return markets[address(cToken)].accountMembership[account] && !collateralGuardianPaused[address(collateralGuardianPaused)];
     }
 
     /**
@@ -997,6 +997,16 @@ contract Comptroller is ComptrollerV5Storage, ComptrollerInterface, ComptrollerE
         emit NewPauseGuardian(oldPauseGuardian, pauseGuardian);
 
         return uint(Error.NO_ERROR);
+    }
+
+    function _setCollateralPaused(CToken cToken, bool state) public returns (bool) {
+        require(markets[address(cToken)].isListed, "cannot pause a market that is not listed");
+        require(msg.sender == pauseGuardian || msg.sender == admin, "only pause guardian and admin can pause");
+        require(msg.sender == admin || state == true, "only admin can unpause");
+
+        collateralGuardianPaused[address(cToken)] = state;
+        emit ActionPaused(cToken, "Collateral", state);
+        return state;
     }
 
     function _setMintPaused(CToken cToken, bool state) public returns (bool) {
