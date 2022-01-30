@@ -100,7 +100,7 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
      * @return True if the account is in the asset, otherwise false.
      */
     function checkMembership(address account, CToken cToken) external view returns (bool) {
-        return markets[address(cToken)].accountMembership[account] && !collateralGuardianPaused[address(collateralGuardianPaused)];
+        return markets[address(cToken)].accountMembership[account] && !collateralGuardianPaused[address(cToken)];
     }
 
     /**
